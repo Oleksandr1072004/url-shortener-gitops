@@ -2,5 +2,5 @@ existingSecret: url-shortener-secret
 
 image:
   repository: ghcr.io/oleksandr1072004/url-shortener-api-gateway
-  tag: "1.0.0"
+  tag: "1.1.0"
   pullPolicy: IfNotPresent
