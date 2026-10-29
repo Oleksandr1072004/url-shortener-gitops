@@ -63,3 +63,7 @@ def redirect(code: str, db: Session = Depends(get_db)):
     link.clicks += 1
     db.commit()
     return RedirectResponse(url=link.original_url)
+
+@app.get("/version")
+def version():
+    return {"version": os.getenv("APP_VERSION", "dev")}
