@@ -1,0 +1,30 @@
+{{- if .Values.rollout.enabled }}
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: {{ include "url-shortener.fullname" . }}-api
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "url-shortener.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      {{- include "url-shortener.selectorLabels" . | nindent 6 }}
+      app: api-gateway
+  template:
+    # ... СКОПІЮЙТЕ СЮДИ БЛОК template З deployment.yaml БЕЗ ЗМІН ...
+    metadata:
+      labels:
+        {{- include "url-shortener.selectorLabels" . | nindent 8 }}
+        app: api-gateway
+    spec:
+      containers:
+        - name: api-gateway
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          # ... решта конфігурації контейнера (envFrom, ports, resources, probes) ...
+  strategy:
+    {{- toYaml .Values.rollout.strategy | nindent 4 }}
+{{- end }}
