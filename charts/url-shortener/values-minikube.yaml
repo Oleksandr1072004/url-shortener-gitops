@@ -2,5 +2,19 @@ existingSecret: url-shortener-secret
 
 image:
   repository: ghcr.io/oleksandr1072004/url-shortener-api-gateway
-  tag: "1.1.0"
+  tag: "1.2.0"
   pullPolicy: IfNotPresent
+
+replicaCount: 5  # Щонайменше 4-5 реплік, щоб було видно розподіл трафіку
+
+rollout:
+  enabled: true
+  strategy:
+    canary:
+      steps:
+        - setWeight: 20
+        - pause: {}        # Ручна пауза: чекаємо на команду promote
+        - setWeight: 60
+        - pause: { duration: 30s }  # Автоматична пауза на 30 секунд
+        - setWeight: 80
+        - pause: { duration: 30s }
