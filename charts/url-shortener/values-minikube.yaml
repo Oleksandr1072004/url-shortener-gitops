@@ -1,5 +1,9 @@
 existingSecret: url-shortener-secret
 
+env:
+  - name: FAIL_RATE
+    value: "0"
+
 image:
   repository: ghcr.io/oleksandr1072004/url-shortener-api-gateway
   tag: "1.2.0"
@@ -7,14 +11,22 @@ image:
 
 replicaCount: 5  # Щонайменше 4-5 реплік, щоб було видно розподіл трафіку
 
+metrics:
+  enabled: true
+  path: /metrics
+
 rollout:
   enabled: true
+  analysis:
+    enabled: true
+    prometheusAddress: http://kps-prometheus.monitoring:9090
   strategy:
     canary:
       steps:
         - setWeight: 20
-        - pause: {}        # Ручна пауза: чекаємо на команду promote
+        - pause: { duration: 30s }
+        - analysis:
+            templates:
+              - templateName: url-shortener-url-shortener-success-rate
         - setWeight: 60
-        - pause: { duration: 30s }  # Автоматична пауза на 30 секунд
-        - setWeight: 80
         - pause: { duration: 30s }

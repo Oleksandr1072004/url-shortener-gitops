@@ -1,0 +1,21 @@
+{{- if .Values.rollout.analysis.enabled }}
+apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata:
+  name: {{ include "url-shortener.fullname" . }}-success-rate
+  namespace: {{ .Release.Namespace }}
+spec:
+  metrics:
+    - name: success-rate
+      interval: 30s
+      count: 4
+      failureLimit: 1
+      successCondition: result[0] >= 0.95
+      provider:
+        prometheus:
+          address: {{ .Values.rollout.analysis.prometheusAddress }}
+          query: |
+            sum(rate(http_requests_total{namespace="{{ .Release.Namespace }}",status!~"5.."}[1m]))
+            /
+            sum(rate(http_requests_total{namespace="{{ .Release.Namespace }}"}[1m]))
+{{- end }}

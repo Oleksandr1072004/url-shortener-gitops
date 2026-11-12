@@ -11,8 +11,6 @@ spec:
     {{- include "url-shortener.selectorLabels" . | nindent 4 }}
     app: api-gateway
   ports:
-    - port: {{ .Values.service.port }}
-      targetPort: {{ .Values.service.targetPort }}
-      {{- if eq .Values.service.type "NodePort" }}
-      nodePort: {{ .Values.service.nodePort }}
-      {{- end }}
+    - name: http
+      port: 8000
+      targetPort: 8000

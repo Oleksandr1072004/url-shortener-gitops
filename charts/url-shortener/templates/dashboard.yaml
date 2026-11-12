@@ -1,0 +1,11 @@
+{{- if .Values.metrics.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "url-shortener.fullname" . }}-dashboard
+  labels:
+    grafana_dashboard: "1"
+data:
+  url-shortener.json: |-
+    {{ .Files.Get "dashboards/url-shortener.json" | indent 4 }}
+{{- end }}
