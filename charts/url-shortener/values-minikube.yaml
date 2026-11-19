@@ -6,7 +6,7 @@ env:
 
 image:
   repository: ghcr.io/oleksandr1072004/url-shortener-api-gateway
-  tag: "1.2.5"
+  tag: "1.2.0"
   pullPolicy: IfNotPresent
 
 replicaCount: 5  # Щонайменше 4-5 реплік, щоб було видно розподіл трафіку
